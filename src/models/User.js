@@ -1,27 +1,30 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-const userSchema = new mongoose.Schema({
-    username: {
-        required: true,
-        unique: true,
-        type: String,
+const userSchema = new mongoose.Schema(
+    {
+        username: {
+            required: true,
+            unique: true,
+            type: String,
+        },
+        email: {
+            type: String,
+            unique: true,
+            required: true,
+        },
+        password: {
+            required: true,
+            type: String,
+            minlength: 6,
+        },
+        profileImg: {
+            type: String,
+            default: "",
+        },
     },
-    email: {
-        type: String,
-        unique: true,
-        required: true,
-    },
-    password: {
-        required: true,
-        type: String,
-        minlength: 6,
-    },
-    profileImg: {
-        type: String,
-        default: "",
-    },
-});
+    { timestamps: true }
+);
 
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
@@ -31,6 +34,10 @@ userSchema.pre("save", async function (next) {
 
     next();
 });
+
+userSchema.methods.comparePassword = async function (userPassword) {
+    return await bcrypt.compare(userPassword, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 
