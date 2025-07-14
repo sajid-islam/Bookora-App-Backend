@@ -37,7 +37,7 @@ router.post("/", protectRoute, async (req, res) => {
     }
 });
 
-// ger all books
+// get all books
 router.get("/", protectRoute, async (req, res) => {
     try {
         const page = req.query.page || 1;
@@ -59,6 +59,35 @@ router.get("/", protectRoute, async (req, res) => {
         });
     } catch (error) {
         console.error("Error on get all books route", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+router.delete("/:id", protectRoute, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const book = await Book.findById(id);
+
+        if (!book) return res.status(404).json({ message: "Book not found" });
+
+        // check the user is creator of this book
+        if (book.user.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        // delete book image from cloudinary
+        if (book.image.includes("cloudinary")) {
+            const publicId = book.image.split("/").pop().split(".")[0];
+            try {
+                await cloudinary.uploader.destroy(publicId);
+            } catch (error) {
+                console.error("Error deleting book image", error);
+            }
+        }
+
+        await book.deleteOne();
+    } catch (error) {
+        console.error("Error on book delete route", error);
         res.status(500).json({ message: "Internal server error" });
     }
 });
