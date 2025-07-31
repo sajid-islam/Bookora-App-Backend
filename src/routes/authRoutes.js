@@ -86,10 +86,12 @@ router.post("/login", async (req, res) => {
 
         res.status(200).json({
             token,
-            username: user._id,
-            username: user.username,
-            email: user.email,
-            profileImg: user.profileImg,
+            user: {
+                username: user._id,
+                username: user.username,
+                email: user.email,
+                profileImg: user.profileImg,
+            },
         });
     } catch (error) {
         console.error("Error in login route", error);
