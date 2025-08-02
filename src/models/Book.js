@@ -14,7 +14,7 @@ const bookSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        raring: {
+        rating: {
             type: Number,
             required: true,
             min: 1,

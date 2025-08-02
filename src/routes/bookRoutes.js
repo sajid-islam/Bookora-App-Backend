@@ -9,7 +9,7 @@ router.post("/", protectRoute, async (req, res) => {
     try {
         const { image, rating, title, caption } = req.body;
 
-        if (!image || !rating || !title || caption) {
+        if (!image || !rating || !title || !caption) {
             return res
                 .status(400)
                 .json({ message: "Please provide all the filed" });
@@ -33,7 +33,7 @@ router.post("/", protectRoute, async (req, res) => {
         res.status(201).json(newBook);
     } catch (error) {
         console.error("Error on book create route", error);
-        res.status(500).json(error.message);
+        res.status(500).json({ message: error.message });
     }
 });
 
