@@ -9,7 +9,7 @@ import bookRoutes from "./routes/bookRoutes.js";
 
 const app = express();
 const port = 3001 || process.env.PORT;
-app.use(express.json());
+app.use(express.json({ limit: "2mb" }));
 app.use(cors());
 job.start();
 
