@@ -79,6 +79,7 @@ router.get("/user", protectRoute, async (req, res) => {
 router.delete("/:id", protectRoute, async (req, res) => {
     try {
         const id = req.params.id;
+        console.log(id);
         const book = await Book.findById(id);
 
         if (!book) return res.status(404).json({ message: "Book not found" });
@@ -99,6 +100,7 @@ router.delete("/:id", protectRoute, async (req, res) => {
         }
 
         await book.deleteOne();
+        res.status(200).json({ message: "Book deleted successfully" });
     } catch (error) {
         console.error("Error on book delete route", error);
         res.status(500).json({ message: "Internal server error" });
